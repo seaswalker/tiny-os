@@ -40,3 +40,16 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 
 ![结果](images/chapter_3_result.png)
 
+### 第四章
+
+![结果](images/chapter_4_result.png)
+
+注意，书中的源码boot.inc的DESC_LIMIT_VIDEO2定义可能有误，应修改为:
+
+```assembly
+DESC_LIMIT_VIDEO2 equ 00000000000000000000000000001011b
+```
+
+原因是保护模式的基地址是0xb8000，所以最后8位应该是b，而不是0，这样才能正确显示字母'P'。
+
+除此之外第164页的图4-11也有问题，第4个GDT表项(显存)的base应该等于0xb8000，因为如果是图中的0xc00b8000，那么对应的物理内存地址是3072MB处，明显不合理。
