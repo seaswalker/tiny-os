@@ -83,3 +83,9 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 ![检测结果](images/chapter_5_memory_size.png)
 
 结果正是我们设置的内存大小: 32MB，无误。
+
+#### 内存分页
+
+![内存分页结果](images/chapter_5_page_memory.png)
+
+这一节注意要和前面的保护模式、内存检测部分结合起来。

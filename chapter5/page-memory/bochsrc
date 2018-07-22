@@ -1,0 +1,19 @@
+# Bochs配置文件
+
+# 机器内存: 32MB
+megs: 32
+
+# 对应真实机器的bios
+romimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/BIOS-bochs-latest
+# 对应真实机器的VGA bios
+vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-latest
+
+# 启动方式
+boot: disk
+
+# 关闭鼠标
+mouse: enabled=0
+
+# 硬盘设置
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0-master: type=disk, path="disk.img", cylinders=20, heads=16, spt=63
