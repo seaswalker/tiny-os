@@ -89,3 +89,9 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 ![内存分页结果](images/chapter_5_page_memory.png)
 
 这一节注意要和前面的保护模式、内存检测部分结合起来。
+
+#### 加载内核
+
+由于此时没有可以用于打印的手段，所以正确性需要到下一章节验证。此部分需要使用Linux交叉编译器中的ld命令才可以正常链接，Mac自带的无法使用，Mac上的安装参考:
+
+[11-kernel-crosscompiler](https://github.com/cfenollosa/os-tutorial/tree/master/11-kernel-crosscompiler)
