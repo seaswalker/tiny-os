@@ -44,12 +44,42 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 
 ![结果](images/chapter_4_result.png)
 
-注意，书中的源码boot.inc的DESC_LIMIT_VIDEO2定义可能有误，应修改为:
+有以下几点需要注意:
 
-```assembly
-DESC_LIMIT_VIDEO2 equ 00000000000000000000000000001011b
-```
+1. 书中的源码boot.inc的DESC_LIMIT_VIDEO2定义可能有误，应修改为:
 
-原因是保护模式的基地址是0xb8000，所以最后8位应该是b，而不是0，这样才能正确显示字母'P'。
+   ```assembly
+   DESC_LIMIT_VIDEO2 equ 00000000000000000000000000001011b
+   ```
 
-除此之外第164页的图4-11也有问题，第4个GDT表项(显存)的base应该等于0xb8000，因为如果是图中的0xc00b8000，那么对应的物理内存地址是3072MB处，明显不合理。
+   原因是保护模式的基地址是0xb8000，所以最后8位应该是b，而不是0，这样才能正确显示字母'P'。
+
+   第164页的图4-11同样有问题，第4个GDT表项(显存)的base应该等于0xb8000，因为如果是图中的0xc00b8000，那么对应的物理内存地址是3072MB处，明显不合理。
+
+2. Mac上的nasm并不支持数字中间以下划线分割的写法，会出现编译错误。
+
+3. 第161页代码4-3的21行为:
+
+   ```assembly
+   times 60 dq 0
+   ```
+
+   Apple版本的nasm这样写会报错，原因是不能把int型的0赋给dq。稍加变通即可:
+
+   ```assembly
+   times 120 dd 0
+   ```
+
+### 第五章
+
+#### 内存检测
+
+这里对书中源码进行了改造，只使用e820一种方式，检测失败时会在第一行显示字符串: 'failed'，成功将在第二行显示: 'done'，如下图:
+
+![内存检测结果](images/chapter_5_detect_memory.png)
+
+内存检测的结果通过命令: `x /4wx 0xb00`查看，如下图:
+
+![检测结果](images/chapter_5_memory_size.png)
+
+结果正是我们设置的内存大小: 32MB，无误。
