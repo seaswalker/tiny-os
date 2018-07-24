@@ -6,13 +6,11 @@ echo "Creating disk.img..."
 bximage -mode=create -hd=10M -q disk.img
 
 echo "Compiling..."
-/usr/local/i386elfgcc/bin/i386-elf-gcc -c -o kernel/main.o kernel/main.c
-/usr/local/i386elfgcc/bin/i386-elf-ld kernel/main.o -Ttext 0xc0001500 -e main -o kernel/kernel.bin
 nasm -I include/ -o mbr.bin mbr.asm
 nasm -I include/ -o loader.bin loader.asm
 nasm -f elf -o lib/kernel/print.o lib/kernel/print.asm
 /usr/local/i386elfgcc/bin/i386-elf-gcc -I ./lib/ -c -o kernel/main.o kernel/main.c
-/usr/local/i386elfgcc/bin/i386-elf-ld -Ttext 0xc0001500 -e main -o kernel.bin kernel/main.o lib/kernel/print.o
+/usr/local/i386elfgcc/bin/i386-elf-ld -Ttext 0xc0001500 -e main -o kernel/kernel.bin kernel/main.o lib/kernel/print.o
 
 echo "Writing mbr, loader and kernel to disk..."
 dd if=mbr.bin of=disk.img bs=512 count=1 conv=notrunc

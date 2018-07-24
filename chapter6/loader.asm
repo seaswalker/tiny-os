@@ -213,7 +213,7 @@ rd_disk_m_32:
     out dx, al
 
     mov eax, esi
-
+    ; 保存LBA地址
     mov dx, 0x1f3
     out dx, al
 
@@ -251,8 +251,8 @@ rd_disk_m_32:
 
 .go_on_read:
     in ax, dx
-    mov [bx], ax
-    add bx, 2
+    mov [ds:ebx], ax
+    add ebx, 2
     loop .go_on_read
     ret
 

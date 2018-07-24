@@ -7,6 +7,30 @@ SELECTOR_VIDEO equ (0x0003 << 3) + TI_GDT + RPL0
 section .text
 ; put_char，将栈中的一个字符写入光标所在处
 global put_char
+global put_str
+
+; 字符串打印函数，基于put_char封装
+put_str:
+    push ebx
+    push ecx
+    xor ecx, ecx
+    mov ebx, [esp + 12]
+
+.go_on:
+    mov cl, [ebx]
+    cmp cl, 0
+    jz .str_over
+    push ecx
+    call put_char
+    add esp, 4
+    inc ebx
+    jmp .go_on
+
+.str_over:
+    pop ecx
+    pop ebx
+    ret
+
 put_char:
     pushad
     mov ax, SELECTOR_VIDEO
@@ -86,7 +110,7 @@ put_char:
     mov ecx, 80
 
 .cls:
-    mov word [gs:ebx], 0x720
+    mov word [gs:ebx], 0x0720
     add ebx, 2
     loop .cls
     mov bx, 1920

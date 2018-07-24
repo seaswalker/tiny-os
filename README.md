@@ -95,3 +95,11 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 由于此时没有可以用于打印的手段，所以正确性需要到下一章节验证。此部分需要使用Linux交叉编译器中的ld命令才可以正常链接，Mac自带的无法使用，Mac上的安装参考:
 
 [11-kernel-crosscompiler](https://github.com/cfenollosa/os-tutorial/tree/master/11-kernel-crosscompiler)
+
+### 第六章
+
+#### 打印字符串
+
+![打印字符](images/chapter_6_put_str.png)
+
+这里是打印字符和打印字符串两者结合的效果，这里遇到了一个奇怪的问题，如果在main.c中存在除main之外的其它函数，那么实验结果将不正确，原因未知。

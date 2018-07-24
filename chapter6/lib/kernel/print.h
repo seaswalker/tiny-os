@@ -8,4 +8,9 @@
 
 void put_char(uint8_t char_asci);
 
+/**
+ *  字符串打印，必须以\0结尾.
+ */ 
+void put_str(char* message);
+
 #endif
