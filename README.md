@@ -103,3 +103,7 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 ![打印字符](images/chapter_6_put_str.png)
 
 这里是打印字符和打印字符串两者结合的效果，这里遇到了一个奇怪的问题，如果在main.c中存在除main之外的其它函数，那么实验结果将不正确，原因未知。
+
+#### 打印数字
+
+![打印数字](images/chapter_6_put_int.png)
