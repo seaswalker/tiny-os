@@ -107,3 +107,9 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 #### 打印数字
 
 ![打印数字](images/chapter_6_put_int.png)
+
+### 第七章
+
+#### ASM
+
+![汇编中断实现](images/chapter_7_with_asm.png)
