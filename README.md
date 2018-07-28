@@ -118,3 +118,8 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 
 ![改进](images/chapter_7_improve.png)
 
+#### Timer
+
+![timer](images/chapter_7_timer.png)
+
+实验中的中断号与书中不同。
