@@ -123,3 +123,31 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 ![timer](images/chapter_7_timer.png)
 
 实验中的中断号与书中不同。
+
+### 第八章
+
+#### Assert
+
+![Assert](images/chapter_8_assert.png)
+
+注意, 在64位Linux系统上编译时有几点需要注意:
+
+- GCC加上参数:
+
+  ```bash
+  -m32 -fno-stack-protector
+  ```
+
+- LD增加参数:
+
+  ```bash
+  -m elf_i386
+  ```
+
+- 在Ubuntu上使用apt安装的bximage版本较老, 创建镜像的命令为:
+
+  ```bash
+  bximage -hd -mode=flat -size=10 -q disk.img
+  ```
+
+  
