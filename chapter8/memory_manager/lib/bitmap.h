@@ -8,7 +8,7 @@
 struct bitmap {
     uint32_t btmp_bytes_len;
     uint8_t* bits;
-}
+};
 
 void bitmap_init(struct bitmap* btmap);
 
