@@ -23,7 +23,7 @@ void memcpy(void* dst, const void* src, uint32_t size) {
     const uint8_t* _src = (uint8_t) src;
 
     while (size-- > 0) {
-        _dst++ = _src++;
+        *_dst++ = _src++;
     }
 }
 

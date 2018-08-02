@@ -150,4 +150,8 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
   bximage -hd -mode=flat -size=10 -q disk.img
   ```
 
-  
+
+#### 内存池
+
+![内存池](images/chapter_8_memory_pool.png)
+

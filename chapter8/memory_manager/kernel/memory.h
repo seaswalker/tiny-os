@@ -4,7 +4,6 @@
 # include "stdint.h"
 # include "bitmap.h"
 
-
 struct virtual_addr {
     struct bitmap vaddr_bitmap;
     // 虚拟内存的起始地址

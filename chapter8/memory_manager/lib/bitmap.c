@@ -12,7 +12,7 @@ void bitmap_init(struct bitmap* btmap) {
 /**
  * 检测指定位是否为1,如果是,返回1.
  */
-bool bitmap_scan_test(struct bitmap* btmap, uint32_t index) {
+int bitmap_scan_test(struct bitmap* btmap, uint32_t index) {
     uint32_t byte_index = (index / 8);
     uint32_t bit_odd = byte_index % 8;
 
@@ -26,7 +26,7 @@ int bitmap_scan(struct bitmap* btmap, uint32_t cnt) {
     uint32_t idx_byte = 0;
 
     // 以字节为单位进行查找
-    while ((oxff == btmap->bits[idx_byte]) && idx_byte < btmap->btmp_bytes_len) {
+    while ((0xff == btmap->bits[idx_byte]) && idx_byte < btmap->btmp_bytes_len) {
         ++idx_byte;
     }
 
