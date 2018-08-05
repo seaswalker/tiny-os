@@ -7,7 +7,7 @@
 void memset(void* address, uint8_t value, uint32_t size) {
     ASSERT(address != NULL);
 
-    uint8_t* addr = (uint8_t) address;
+    uint8_t* addr = (uint8_t*) address;
     while (size-- > 0) {
         *addr++ = value;
     }
@@ -19,8 +19,8 @@ void memset(void* address, uint8_t value, uint32_t size) {
 void memcpy(void* dst, const void* src, uint32_t size) {
     ASSERT(dst != NULL && src != NULL);
 
-    uint8_t* _dst = (uint8_t) dst;
-    const uint8_t* _src = (uint8_t) src;
+    uint8_t* _dst = (uint8_t*) dst;
+    const uint8_t* _src = (uint8_t*) src;
 
     while (size-- > 0) {
         *_dst++ = _src++;
@@ -33,8 +33,8 @@ void memcpy(void* dst, const void* src, uint32_t size) {
 int memcmp(const void* left, const void* right, uint32_t size) {
     ASSERT(left != NULL && right != NULL);
 
-    const uint8_t* _left = (uint8_t) left;
-    const uint8_t* _right = (uint8_t) right;
+    const uint8_t* _left = (uint8_t*) left;
+    const uint8_t* _right = (uint8_t*) right;
     
     while (size-- > 0 && *_left++ == *_right);
 

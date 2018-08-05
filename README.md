@@ -155,3 +155,8 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 
 ![内存池](images/chapter_8_memory_pool.png)
 
+#### 内存分配
+
+![内存分配](images/chapter_8_malloc.png)
+
+注：上一节中内存池初始化代码有一个bug：用户内存池其实地址应该是0xc00a1e0，已在此节修正。

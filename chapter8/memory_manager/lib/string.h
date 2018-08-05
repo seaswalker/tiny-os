@@ -1,3 +1,6 @@
+# ifndef _LIB_STRING_H
+# define _LIB_STRING_H
+
 # include "global.h"
 # include "debug.h"
 
@@ -11,3 +14,5 @@ char* strchr(const char* str, const uint8_t c);
 char* strrchr(const char* str, const uint8_t c);
 char* strcat(char* dst, const char* src);
 uint32_t strchrs(const char* str, const uint8_t c);
+
+# endif

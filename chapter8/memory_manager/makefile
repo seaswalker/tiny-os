@@ -33,7 +33,7 @@ $(BUILD_DIR)/string.o: lib/string.c lib/string.h kernel/global.h kernel/debug.h
 $(BUILD_DIR)/bitmap.o: lib/bitmap.c lib/bitmap.h kernel/debug.h kernel/interrupt.h lib/stdint.h
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/memory.o: kernel/memory.c kernel/memory.h lib/bitmap.h lib/stdint.h lib/kernel/print.h
+$(BUILD_DIR)/memory.o: kernel/memory.c kernel/memory.h lib/bitmap.h lib/stdint.h lib/kernel/print.h kernel/debug.h lib/string.h
 	$(CC) $(CFLAGS) $< -o $@
 
 # 编译loader和mbr
