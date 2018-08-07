@@ -1,18 +1,22 @@
 # include "kernel/print.h"
 # include "init.h"
-# include "debug.h"
-# include "memory.h"
+# include "thread.h"
+
+void k_thread_function(void*);
 
 int main(void) {
     put_str("I am kernel.\n");
     init_all();
-    put_str("Init done.\n");
-    
-    void* vaddr = get_kernel_pages(3);
-    put_str("\nKernel memory virtual page start address: ");
-    put_int((uint32_t) vaddr);
-    put_char('\n');
+
+    thread_start("k_thread_1", 31, k_thread_function, "skywalker ");
 
     while (1);
     return 0;
+}
+
+void k_thread_function(void* args) {
+    // 这里必须是死循环，否则执行流并不会返回到main函数，所以CPU将会放飞自我，出发6号未知操作码异常
+    while (1) {
+        put_str((char*) args);
+    }
 }
