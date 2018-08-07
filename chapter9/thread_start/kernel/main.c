@@ -15,7 +15,7 @@ int main(void) {
 }
 
 void k_thread_function(void* args) {
-    // 这里必须是死循环，否则执行流并不会返回到main函数，所以CPU将会放飞自我，出发6号未知操作码异常
+    // 这里必须是死循环，否则执行流并不会返回到main函数，所以CPU将会放飞自我，触发6号未知操作码异常
     while (1) {
         put_str((char*) args);
     }
