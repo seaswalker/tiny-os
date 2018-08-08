@@ -32,4 +32,15 @@ struct list {
  */ 
 typedef int (function) (struct list_elem*, int arg);
 
+void list_init(struct list* list);
+void list_insert_before(struct list_elem* before, struct list_elem* elem);
+void list_push(struct list* list, struct list_elem* elem);
+void list_append(struct list* list, struct list_elem* elem);
+void list_remove(struct list_elem* elem);
+struct list_elem* list_pop(struct list* list);
+int list_find(struct list* list, struct list_elem* elem);
+int list_empty(struct list* list);
+uint32_t list_length(struct list* list);
+struct list_elem* list_traversal(struct list* list, function func, int arg);
+
 # endif
