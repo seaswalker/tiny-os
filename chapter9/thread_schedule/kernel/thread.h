@@ -2,6 +2,7 @@
 # define _THREAD_H
 
 # include "stdint.h"
+# include "kernel/list.h"
 
 /**
  * 自定义通用函数类型.
@@ -68,13 +69,25 @@ struct task_struct {
     // 内核栈
     uint32_t* self_kstack;
     enum task_status status;
-    uint8_t priority;
     char name[16];
+    uint8_t priority;
+    // 当前线程可以占用的CPU嘀嗒数
+    uint8_t ticks;
+    // 此任务占用的总嘀嗒数
+    uint32_t elaspsed_ticks;
+    // 可执行队列节点
+    struct list_elem general_tag;
+    // 所有不可运行线程队列节点
+    struct list_elem all_list_tag;
+    uint32_t* pgdir;
     uint32_t stack_magic;
 };
 
+struct task_struct* running_thread();
 void thread_create(struct task_struct* pthread, thread_func function, void* func_args);
 void init_thread(struct task_struct* pthread, char* name, int prio);
 struct task_struct* thread_start(char* name, int prio, thread_func function, void* func_args);
+void schedule();
+void thread_init();
 
 # endif

@@ -12,6 +12,7 @@ section .text
 global put_char
 global put_str
 global put_int
+global set_cursor
 
 put_int:
     pushad
@@ -129,7 +130,7 @@ put_char:
     inc bx
     mov byte [gs:bx], 0x07
     shr bx, 1
-    jmp .set_cursor
+    jmp set_cursor
 
 .put_other:
     shl bx, 1
@@ -139,7 +140,7 @@ put_char:
     shr bx, 1
     inc bx
     cmp bx, 2000
-    jl .set_cursor
+    jl set_cursor
 
 .is_line_feed:
 .is_carriage_return:
@@ -155,7 +156,7 @@ put_char:
     add bx, 80
     cmp bx, 2000
 .is_line_feed_end:
-    jl .set_cursor
+    jl set_cursor
 
 .roll_screeen:
     cld 
@@ -174,7 +175,7 @@ put_char:
     loop .cls
     mov bx, 1920
 
-.set_cursor:
+set_cursor:
     mov dx, 0x03d4
     mov al, 0x0e
     out dx, al

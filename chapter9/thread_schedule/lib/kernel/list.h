@@ -6,10 +6,10 @@
 /**
  * 获取结构体内成员在结构体的偏移.
  */ 
-# define offset(struct_type, member) (int) ($((struct_type*)0)->member);
+# define offset(struct_type, member) (int) (&((struct_type*)0)->member)
 
-# define ele2entry(struct_type, struct_member_name, elem_ptr) \
-    (struct_type*) ((int) elem_ptr - offset(struct_type, struct_member_name));
+# define elem2entry(struct_type, struct_member_name, elem_ptr) \
+    (struct_type*) ((int) elem_ptr - offset(struct_type, struct_member_name))
 
 /**
  * 链表节点.

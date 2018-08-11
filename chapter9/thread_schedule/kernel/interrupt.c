@@ -2,6 +2,7 @@
 # include "global.h"
 # include "io.h"
 # include "interrupt.h"
+# include "kernel/print.h"
 
 # define IDT_DESC_CNT 0x21
 # define PIC_M_CTRL 0x20
@@ -38,7 +39,7 @@ enum intr_status intr_enable() {
     enum intr_status old_status;
     if (INTR_ON == intr_get_status()) {
         old_status = INTR_ON;
-	return old_status;
+	    return old_status;
     }
 
     old_status = INTR_OFF;
@@ -83,9 +84,30 @@ static void general_intr_handler(uint8_t vec_nr) {
         return;
     }
 
-    put_str("int vector: 0x");
-    put_int(vec_nr);
-    put_char('\n');
+    // 在屏幕的左上角打印异常信息
+    set_cursor(0);
+    int cursor_pos = 0;
+    while (cursor_pos < 320) {
+        put_char(' ');
+        ++cursor_pos;
+    }
+
+    set_cursor(0);
+    put_str("---------------Exception message:\n");
+    set_cursor(88);
+    put_str(intr_name[vec_nr]);
+
+    if (vec_nr == 14) {
+        // Pagefault，打印缺失的地址
+        int page_fault_vaddr = 0;
+        asm ("movl %%cr2, %0" : "=r" (page_fault_vaddr));
+        put_str("\nPage fault address is: ");
+        put_int(page_fault_vaddr);
+    }
+
+    put_str("\n---------------Exception message end.\n");
+    // 不再继续向下执行，以便于查看异常信息
+    while (1);
 }
 
 /**
@@ -178,4 +200,8 @@ void idt_init() {
     uint64_t idt_operand = ((sizeof(idt) - 1) | ((uint64_t) ((uint32_t) idt << 16)));
     asm volatile ("lidt %0" : : "m" (idt_operand));
     put_str("idt_init done.\n");
+}
+
+void register_handler(uint8_t vec_no, intr_handler handler) {
+    idt_table[vec_no] = handler;
 }
