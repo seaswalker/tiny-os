@@ -1,7 +1,7 @@
 # ifndef _THREAD_SYNC_H
 # define _THREAD_SYNC_H
 
-# include "list.h"
+# include "kernel/list.h"
 # include "thread.h"
 # include "stdint.h"
 

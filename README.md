@@ -180,3 +180,10 @@ vgaromimage: file=/usr/local/Cellar/bochs/2.6.9_2/share/bochs/VGABIOS-lgpl-lates
 - 如果被调度线程是第一次执行，那么转到线程对应的函数
 - 如果不是第一次被调度，那么走时序图的下半部分，原因是switch_to中保存的起始地址其实是此函数的返回地址
 - 虚线流程由第二次调度触发
+
+### 第十章
+
+#### 锁
+
+![锁](images/chapter_10_with_lock.png)
+

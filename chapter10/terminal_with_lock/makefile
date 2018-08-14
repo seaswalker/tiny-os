@@ -10,19 +10,25 @@ CFLAGS = -Wall -m32 -fno-stack-protector $(LIB) -c -fno-builtin -W -Wstrict-prot
 LDFLAGS = -m elf_i386 -Ttext $(ENTRY_POINT) -e main -Map $(BUILD_DIR)/kernel.map
 OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o $(BUILD_DIR)/timer.o $(BUILD_DIR)/kernel.o $(BUILD_DIR)/print.o  \
 	   $(BUILD_DIR)/bitmap.o $(BUILD_DIR)/memory.o $(BUILD_DIR)/string.o $(BUILD_DIR)/debug.o $(BUILD_DIR)/thread.o $(BUILD_DIR)/switch.o \
-	   $(BUILD_DIR)/list.o
+	   $(BUILD_DIR)/list.o $(BUILD_DIR)/sync.o  $(BUILD_DIR)/console.o
 
 # C代码编译
-$(BUILD_DIR)/main.o: kernel/main.c lib/kernel/print.h lib/stdint.h kernel/init.h
+$(BUILD_DIR)/main.o: kernel/main.c lib/kernel/print.h lib/stdint.h kernel/init.h device/console.h
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/init.o: kernel/init.c kernel/init.h lib/kernel/print.h lib/stdint.h kernel/interrupt.h device/timer.h
+$(BUILD_DIR)/init.o: kernel/init.c kernel/init.h lib/kernel/print.h lib/stdint.h kernel/interrupt.h device/timer.h device/console.h
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/interrupt.o: kernel/interrupt.c kernel/interrupt.h lib/stdint.h kernel/global.h kernel/io.h lib/kernel/print.h
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/timer.o: device/timer.c device/timer.h lib/stdint.h kernel/io.h lib/kernel/print.h
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_DIR)/sync.o: kernel/thread/sync.c kernel/thread/sync.h kernel/interrupt.h kernel/debug.h lib/stdint.h lib/kernel/list.h
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_DIR)/console.o: device/console.c device/console.h kernel/thread/thread.h kernel/thread/sync.h lib/stdint.h
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/debug.o: kernel/debug.c kernel/debug.h lib/kernel/print.h lib/stdint.h kernel/interrupt.h
@@ -40,7 +46,7 @@ $(BUILD_DIR)/list.o: lib/kernel/list.c lib/kernel/list.h kernel/interrupt.h kern
 $(BUILD_DIR)/memory.o: kernel/memory.c kernel/memory.h lib/bitmap.h lib/stdint.h lib/kernel/print.h kernel/debug.h lib/string.h
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/thread.o: kernel/thread.c kernel/thread.h lib/stdint.h lib/string.c kernel/global.h kernel/memory.h kernel/debug.h kernel/interrupt.h lib/kernel/print.h \
+$(BUILD_DIR)/thread.o: kernel/thread/thread.c kernel/thread/thread.h lib/stdint.h lib/string.c kernel/global.h kernel/memory.h kernel/debug.h kernel/interrupt.h lib/kernel/print.h \
 			           lib/kernel/list.h
 	$(CC) $(CFLAGS) $< -o $@
 

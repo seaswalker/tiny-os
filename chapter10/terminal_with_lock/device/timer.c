@@ -1,7 +1,7 @@
 # include "io.h"
 # include "kernel/print.h"
 # include "interrupt.h"
-# include "thread.h"
+# include "thread/thread.h"
 # include "debug.h"
 
 # define IRQ0_FREQUENCY 1000
