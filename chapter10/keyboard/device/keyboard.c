@@ -3,6 +3,7 @@
 # include "io.h"
 # include "interrupt.h"
 # include "global.h"
+# include "ioqueue.h"
 
 # define KEYBOARD_BUF_PORT 0x60
 
@@ -44,6 +45,7 @@
  * 记录以下按键是否已被按下.
  */ 
 static int ctrl_status, shift_status, alt_status, caps_lock_status, ext_scan_code;
+static struct ioqueue keyboard_buffer;
 
 /**
  * 以通码为索引的显示字符数组，零号元素为shift没有按下时的展示，1反之.
@@ -166,8 +168,9 @@ static void init_keyboard_handler(void) {
 
     char cur_char = keymap[index][shift];
 
-    if (cur_char) {
+    if (cur_char && !is_queue_full(&keyboard_buffer)) {
         put_char(cur_char);
+        queue_putchar(&keyboard_buffer, cur_char);
         return;
     }
 
@@ -184,6 +187,7 @@ static void init_keyboard_handler(void) {
 
 void keyboard_init(void) {
     put_str("Keyboard init start...\n");
+    ioqueue_init(&keyboard_buffer);
     register_handler(0x21, init_keyboard_handler);
     put_str("Keyboard init done.\n");
 }
