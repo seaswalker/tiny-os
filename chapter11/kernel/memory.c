@@ -3,6 +3,7 @@
 # include "kernel/print.h"
 # include "string.h"
 # include "debug.h"
+# include "thread/sync.h"
 
 # define PAGE_SIZE 4096
 
@@ -31,6 +32,7 @@ struct pool {
     struct bitmap pool_bitmap;
     uint32_t phy_addr_start;
     uint32_t pool_size;
+    struct lock lock;
 };
 
 struct pool kernel_pool, user_pool;
@@ -130,7 +132,18 @@ static void* vaddr_get(enum pool_flags pf, uint32_t pg_count) {
 
         vaddr_start = (kernel_addr.vaddr_start + bit_idx_start * PAGE_SIZE); 
     } else {
-        // 用户内存分配暂不支持
+        struct task_struct* cur = running_thread();
+        bit_idx_start = bitmap_scan(&cur->userprog_addr.vaddr_bitmap, pg_count);
+
+        if (bit_idx_start == -1) {
+            return NULL;
+        }
+
+        while (cnt < pg_count) {
+            bitmap_set(&cur->userprog_addr.vaddr_bitmap, bit_idx_start + cnt++, 1);
+        }
+
+        vaddr_start = cur->userprog_addr.vaddr_start + bit_idx_start * PAGE_SIZE;
     }
 
     return (void*) vaddr_start;

@@ -3,6 +3,7 @@
 
 # include "stdint.h"
 # include "kernel/list.h"
+# include "memory.h"
 
 /**
  * 自定义通用函数类型.
@@ -82,6 +83,7 @@ struct task_struct {
     // 所有不可运行线程队列节点
     struct list_elem all_list_tag;
     uint32_t* pgdir;
+    struct virtual_addr userprog_addr;
     uint32_t stack_magic;
 };
 
