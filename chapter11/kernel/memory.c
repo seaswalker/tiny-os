@@ -139,8 +139,8 @@ static void* vaddr_get(enum pool_flags pf, uint32_t pg_count) {
             return NULL;
         }
 
-        while (cnt < pg_count) {
-            bitmap_set(&cur->userprog_addr.vaddr_bitmap, bit_idx_start + cnt++, 1);
+        while (count < pg_count) {
+            bitmap_set(&cur->userprog_addr.vaddr_bitmap, bit_idx_start + count++, 1);
         }
 
         vaddr_start = cur->userprog_addr.vaddr_start + bit_idx_start * PAGE_SIZE;
@@ -241,8 +241,67 @@ void* get_kernel_pages(uint32_t page_count) {
     return vaddr;
 }
 
+/**
+ * 在用户空间中申请page_count页内存，并返回其虚拟地址.
+ */ 
+void* get_user_pages(uint32_t page_count) {
+    // 可能有多个线程/进程同时申请
+    lock_acquire(&user_pool.lock);
+
+    void* vaddr = malloc_page(PF_USER, page_count);
+
+    memset(vaddr, 0, page_count * PAGE_SIZE);
+
+    lock_release(&user_pool.lock);
+    return vaddr;    
+}
+
+/**
+ * 将地址vaddr与pf池中的物理地址关联，仅支持一页内存分配.
+ */ 
+void* get_a_page(enum pool_flags pf, uint32_t vaddr) {
+    struct pool* mem_pool = (pf & PF_KERNEL) ? &kernel_pool : &user_pool;
+
+    lock_acquire(&mem_pool->lock);
+
+    struct task_struct* cur = running_thread();
+    int32_t bit_idx = -1;
+
+    if (cur->pgdir != NULL && pf == PF_USER) {
+        // 用户进程内存，修改进程对应的虚拟地址位图
+        bit_idx = (vaddr - cur->userprog_addr.vaddr_start) / PAGE_SIZE;
+        bitmap_set(&cur->userprog_addr.vaddr_bitmap, bit_idx, 1);
+    } else if (cur->pgdir == NULL && pf == PF_KERNEL) {
+        // 内核线程
+        bit_idx = (vaddr - kernel_addr.vaddr_start) / PAGE_SIZE;
+        bitmap_set(&kernel_addr.vaddr_bitmap, bit_idx, 1);
+    } else {
+        PANIC("Unkown memory space type.\n");
+    }
+
+    void* page_phyaddr = palloc(mem_pool);
+    if (page_phyaddr == NULL) {
+        return NULL;
+    }
+
+    page_table_add((void*) vaddr, page_phyaddr);
+
+    lock_release(&mem_pool->lock);
+    return (void*) vaddr;
+}
+
+/**
+ * 将给定的虚拟地址转为物理地址.
+ */ 
+uint32_t addr_v2p(uint32_t vaddr) {
+    uint32_t* pte = pte_ptr(vaddr);
+    return ((*pte * 0xfffff000) + (vaddr & 0x00000fff));
+}
+
 void mem_init(void) {
     put_str("Init memory start.\n");
+    lock_init(&kernel_pool.lock);
+    lock_init(&user_pool.lock);
     uint32_t total_memory = (*(uint32_t*) (0xb00));
     mem_pool_init(total_memory);
     put_str("Init memory done.\n");
