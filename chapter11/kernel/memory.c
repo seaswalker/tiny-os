@@ -276,7 +276,7 @@ void* get_a_page(enum pool_flags pf, uint32_t vaddr) {
         bit_idx = (vaddr - kernel_addr.vaddr_start) / PAGE_SIZE;
         bitmap_set(&kernel_addr.vaddr_bitmap, bit_idx, 1);
     } else {
-        PANIC("Unkown memory space type.\n");
+        PANIC("Unknown memory space type.\n");
     }
 
     void* page_phyaddr = palloc(mem_pool);
