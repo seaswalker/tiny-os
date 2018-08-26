@@ -40,7 +40,7 @@
 # define DESC_D_32 1
 # define DESC_L 0
 # define DESC_AVL 0
-# define DESC_P 0
+# define DESC_P 1
 # define DESC_DPL_0 0
 # define DESC_DPL_1 1
 # define DESC_DPL_2 2
@@ -58,7 +58,7 @@
 
 // TSS描述符属性
 # define TSS_DESC_D 0
-# define TSS_ATTR_HIGH ((DESC_G_4K << 7) + (DESC_D_32 << 6) + (DESC_L << 5) + (DESC_AVL << 4) + 0x0)
+# define TSS_ATTR_HIGH ((DESC_G_4K << 7) + (TSS_DESC_D << 6) + (DESC_L << 5) + (DESC_AVL << 4) + 0x0)
 # define TSS_ATTR_LOW ((DESC_P << 7) + (DESC_DPL_0 << 5) + (DESC_S_SYS << 4) + (DESC_TYPE_TSS))
 # define SELECTOR_TSS ((4 << 3) + (TI_GDT << 2) + RPL0)
 
@@ -79,7 +79,7 @@ struct gdt_desc {
 # define EFLAGS_IF_0 0
 # define EFLAGS_IOPL_3 (3 << 12)
 # define EFLAGS_IOPL_0 (0 << 12)
-# define DEV_ROUND_UP(X, STEP) ((X + STEP - 1) / STEP)
+# define DIV_ROUND_UP(X, STEP) ((X + STEP - 1) / STEP)
 # define PAGE_SIZE 4096
 
 #endif

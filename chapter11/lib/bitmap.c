@@ -16,7 +16,7 @@ int bitmap_scan_test(struct bitmap* btmap, uint32_t index) {
     uint32_t byte_index = (index / 8);
     uint32_t bit_odd = byte_index % 8;
 
-    return (btmap->bits[byte_index] & BITMAP_MASK << bit_odd);
+    return (btmap->bits[byte_index] & (BITMAP_MASK << bit_odd));
 }
 
 /**
@@ -26,10 +26,11 @@ int bitmap_scan(struct bitmap* btmap, uint32_t cnt) {
     uint32_t idx_byte = 0;
 
     // 以字节为单位进行查找
-    while ((0xff == btmap->bits[idx_byte]) && idx_byte < btmap->btmp_bytes_len) {
+    while ((0xff == btmap->bits[idx_byte]) && (idx_byte < btmap->btmp_bytes_len)) {
         ++idx_byte;
     }
 
+    ASSERT(idx_byte < btmap->btmp_bytes_len);
     // 没有找到
     if (idx_byte == btmap->btmp_bytes_len) {
         return -1;
@@ -37,7 +38,7 @@ int bitmap_scan(struct bitmap* btmap, uint32_t cnt) {
 
     // 找到了一个字节不全为1,那么在字节内部再次进行查找具体的起使位
     int idx_bit = 0;
-    while ((uint8_t) BITMAP_MASK << idx_bit & btmap->bits[idx_byte]) {
+    while ((uint8_t) (BITMAP_MASK << idx_bit) & btmap->bits[idx_byte]) {
         ++idx_bit;
     }
 
@@ -75,7 +76,7 @@ void bitmap_set(struct bitmap* btmap, uint32_t index, int8_t value) {
     ASSERT(value == 0 || value == 1);
 
     uint32_t byte_index = index / 8;
-    uint32_t bit_odd = byte_index % 8;
+    uint32_t bit_odd = index % 8;
 
     if (value) {
         btmap->bits[byte_index] |= (BITMAP_MASK << bit_odd);

@@ -1,6 +1,6 @@
+# include "process.h"
 # include "interrupt.h"
 # include "memory.h"
-# include "process.h"
 # include "global.h"
 # include "debug.h"
 # include "tss.h"
@@ -75,9 +75,50 @@ uint32_t* create_page_dir(void) {
     }
 
     // 将内核的页表复制到进程页目录项中，实现内核的共享
-    memcpy((uint32_t*) ((uint32_t) page_dir_vaddr + 0x300 * 4), ((uint32_t*) 0xfffff000 + 0x300 * 4), 1024);
+    memcpy((uint32_t*) ((uint32_t) page_dir_vaddr + 0x300 * 4), (uint32_t*) (0xfffff000 + 0x300 * 4), 1024);
 
+    // 设置最后一项页表的地址为页目录地址
     uint32_t new_page_dir_phy_addr = addr_v2p((uint32_t) page_dir_vaddr);
-    page_dir_vaddr[1023] = new_page_dir_phy_addr | PG_US_U | PG_RW_W | PG_P_1;
+    page_dir_vaddr[1023] = (new_page_dir_phy_addr | PG_US_U | PG_RW_W | PG_P_1);
+    
     return page_dir_vaddr;
+}
+
+/**
+ * 为用户进程设置其单独的虚拟地址池.
+ */ 
+void create_user_vaddr_bitmap(struct task_struct* user_process) {
+    user_process->userprog_addr.vaddr_start = USER_VADDR_START;
+    // 0xc0000000是内核虚拟地址起始处
+    uint32_t bitmap_page_count = DIV_ROUND_UP((0xc0000000 - USER_VADDR_START) / PAGE_SIZE / 8, PAGE_SIZE);
+
+    user_process->userprog_addr.vaddr_bitmap.bits = get_kernel_pages(bitmap_page_count);
+    user_process->userprog_addr.vaddr_bitmap.btmp_bytes_len = (0xc0000000 - USER_VADDR_START) / PAGE_SIZE / 8;
+
+    bitmap_init(&user_process->userprog_addr.vaddr_bitmap);
+}
+
+/**
+ * 创建用户进程.
+ */ 
+void process_execute(void* filename, char* name) {
+    struct task_struct* pcb = get_kernel_pages(1);
+    
+    init_thread(pcb, name, default_prio);
+
+    create_user_vaddr_bitmap(pcb);
+
+    thread_create(pcb, start_process, filename);
+
+    pcb->pgdir = create_page_dir();
+
+    enum intr_status old_status = intr_disable();
+
+    ASSERT(!list_find(&thread_ready_list, &pcb->general_tag));
+    list_append(&thread_ready_list, &pcb->general_tag);
+
+    ASSERT(!list_find(&thread_all_list, &pcb->all_list_tag));
+    list_append(&thread_all_list, &pcb->all_list_tag);
+
+    intr_set_status(old_status);
 }

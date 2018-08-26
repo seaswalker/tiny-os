@@ -87,6 +87,10 @@ struct task_struct {
     uint32_t stack_magic;
 };
 
+struct task_struct* main_thread;
+struct list thread_ready_list;
+struct list thread_all_list;
+
 struct task_struct* running_thread();
 void thread_create(struct task_struct* pthread, thread_func function, void* func_args);
 void init_thread(struct task_struct* pthread, char* name, int prio);

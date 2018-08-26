@@ -99,6 +99,8 @@ static void printKernelPoolInfo(struct pool p) {
     put_int(p.pool_bitmap.bits);
     put_str("; Kernel pool physical address: ");
     put_int(p.phy_addr_start);
+    put_str("; Kernel pool length: ");
+    put_int(p.pool_bitmap.btmp_bytes_len);
     put_char('\n');
 }
 
@@ -295,7 +297,7 @@ void* get_a_page(enum pool_flags pf, uint32_t vaddr) {
  */ 
 uint32_t addr_v2p(uint32_t vaddr) {
     uint32_t* pte = pte_ptr(vaddr);
-    return ((*pte * 0xfffff000) + (vaddr & 0x00000fff));
+    return ((*pte & 0xfffff000) + (vaddr & 0x00000fff));
 }
 
 void mem_init(void) {
